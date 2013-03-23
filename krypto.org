@@ -1,0 +1,222 @@
+#+LATEX_HEADER: \renewcommand{\maketitle}{\begin{frame} \titlepage \begin{center} \includegraphics[scale=0.25]{voynich.png} \end{center} \end{frame}}                                                   
+#+LATEX_HEADER: \usepackage[ngerman]{babel}
+
+#+TITLE:     Web, Mails und Chat verschlüsseln
+#+AUTHOR:    Johannes Fürmann  <johannes@fuermann.cc>
+#+EMAIL:     johannes@fuermann.cc
+#+DESCRIPTION: Kryptographie im Internet und wie man sie als End-User am Besten benutzt.
+#+KEYWORDS: 
+#+LANGUAGE:  de
+
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP: 
+#+LINK_HOME: 
+
+#+LATEX_HEADER: \usepackage[ngerman]{babel}
+
+#+startup: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [t]
+#+BEAMER_FRAME_LEVEL: 2
+
+#+begin_latex
+\begin{frame}[c]{Über mich}
+\begin{center}
+Johannes Fürmann \\
+(Chaostreff Augsburg) \\ ~ \\
+Mail: johannes@fuermann.cc \\
+Twitter: @waaaaargh \\
+XMPP: waaaaargh@jabber.sft.mx \\
+\end{center}
+\end{frame}
+#+end_latex
+
+* Was ist Kryptographie
+** Was ist Kryptographie
+   #+begin_latex
+   \begin{center}
+   \includegraphics[scale=0.5]{enigma.jpg}
+   \end{center}
+   #+end_latex
+   
+** Grundkonzept
+   * Motivation: Vertrauliche Botschaften über ein unsicheres Medium übertragen
+   * Verschlüsseln: unlesbar machen, entschlüsseln: wieder lesbar machen
+   * Die verschlüsselte Nachricht trägt dieselben Informationen wie die entschlüsselte
+   * Nebeneffekt: Manipulationen fallen sofort auf.
+**  Geschichtlicher Abriss
+*** Block                                                                    :B_ignoreheading:BMCOL:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.4
+    :END:
+    * Geheimschriften, Buchstabenverschieben (Caesar-Chiffre) und -Vertauschen.
+    * Meist symmetrisch
+    * Zu unsicher für die heutige Zeit: Schlüsselraum beschränkt.
+    * Computer sind sehr gut im Ausprobieren.
+*** Della-Porta-Scheibe 			      :B_ignoreheading:BMCOL:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.5
+    :END:
+    file:dellaporta.jpg
+** Moderne Verfahren
+*** content
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.7
+    :END:
+    * Meist asymmetrisch (grob vereinfacht)
+        * Jede/r Teilnehmer/in hat ein Schlüsselpaar, bestehend aus einem öffentlichen und einem privaten Schlüssel
+	* Sender verschlüsselt eine Nachricht mit seinem privaten Schlüssel und dem öffentlichen Schlüssel des Empfängers
+	* Der Empfänger kann die verschlüsselte Nachricht mit seinem privaten Schlüssel und dem öffentlichen Schlüssel des Absenders entschlüsseln
+	* Mit seinem privaten Schlüssel kann ein/e Teilnehmer/in
+    * RSA ist oft die Basis für moderne Kryptographie
+*** images
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.18
+    :END:
+    file:rivest.jpg
+
+    file:shamir.jpg
+
+    file:adleman.jpg
+** Motivation
+*** content
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.6
+    :END:
+
+    * Situation: E-Mails checken am Flughafen, im Cafe, etc.
+    * Für einfacheren Zugang sind die WLAN-Netze meist unverschlüsselt.
+    * Daraus ergibt sich ein potenzielles Sicherheitsrisiko, denn unverschlüsselten Datenverkehr kann Jede/r mitlesen.
+*** hacker
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :BEAMER_col: 0.4
+    :END:
+
+    file:hacker.jpg
+* Das SSLiversum
+** Das SSLiversum
+   #+begin_latex
+   \begin{center}
+   \includegraphics[scale=0.4]{ssl-handshake.jpg}
+   \end{center}
+   #+end_latex                      
+   
+** Was ist SSL?
+   * SSL ('Secure Sockets Layer') heißt jetzt eigentlich TLS ('Transport Layer Security')
+   * Transparent, jedes Application-Layer-Protokoll kann getunnelt werden (vorausgesetzt, die Software unterstützt es)
+   * TLS/SSL ist zertifikatsbasiert, die öffentlichen Schlüssel heißen hier zertifikate.
+** Wie funktioniert SSL/TLS?
+   * Um sicher zu gehen, dass der Gegenstelle vertraut werden kann, müssen die Zertifikate von einer sogenannten Certificate Authority (CA) signiert werden
+   * Das Signierte Zertifikat wird nun im Klartext (oder kryptographisch schwach kodiert) an den Client übertragen
+   * Der Client verifiziert das Zertifikat und signalisiert dem Server, dass er bereit ist, kryptographisch gesichert zu kommunizieren
+   * Ab diesem Zeitpunkt wird ausschließlich verschlüsselt kommuniziert
+** S/MIME
+   * Standard für die Verschlüsselung von E-Mails
+   * In fast jedem Mail-Client ist Unterstützung bereits integriert
+   * Nachteil: Zertifikate von Standardmäßig mit Mail-Clients verteilten CAs kosten Geld.
+** Ist das sicher?
+   * Jein
+   * Hinter CAs stecken meist Firmen, die zufällig das Vertrauen von Browser- und Betriebssystemherstellern genießen.
+   * Überraschung: Auch diese Firmen haben bisweilen Sicherheitsprobleme.
+   * CAs werden sehr intransparent geführt.
+   * Es lohnt sich, die Certstores von Browser und Mailclient auszumisten
+** Besonderheit: CAcert
+   #+begin_latex                                                                                                                                                      
+   \begin{center}
+   \includegraphics[scale=0.75]{cacert.png}
+
+   https://www.cacert.org
+   \end{center}
+   #+end_latex
+   * Organisation
+     * Australischer Verein
+     * CACert Teilnehmer können sich von Anderen Teilnehmer, die das Vertrauen von CACert genießen, 'assuren' lassen.
+     * Assurer wird man, in dem man sich von vielen anderen Assurern assuren lässt und online eine Prüfung ablegt
+   * Nachteile
+     * Momentan von vielen Browser- und Betriebssystemherstellern noch nicht anerkannt
+     * Dadurch werden Besucher von Webpages mit CAcert-Zertifikaten von ihrem Browser oft abgeschreckt
+* Das GPG/PGPiversum
+** Das GPGiversum
+   #+begin_latex
+   \begin{center}
+   \includegraphics[scale=0.4]{gnupg.png}
+   \end{center}
+   #+end_latex
+** Was ist PGP/GPG?
+   * Kryptosystem, unterstützt eine Reihe von Algorithmen und Verfahren
+   * Einer der verbreitetsten Standards zur verschlüsselten E-Mail-Kommunikation
+   * Ursprünglich entwickelt von Philip Zimmermann als PGP
+** Vergleich zu SSL/TLS
+   * OSI-Layer 7 (bettet sich in Anwendungsprotokolle ein)
+   * Keine zentrale Infrastruktur nötig
+   * Keine finanziellen Einstiegshürden: Einfach loslegen.
+** Software
+   * Ursprünglich PGP ('pretty good privacy') von Philip Zimmermann
+   * Inzwischen hauptsächlich GPG ('GNU Privacy Guard')
+** Mail-Client Integration
+   * Enigmail für Thunderbird
+   * Bei Evolution ist GPG-Support bereits integriert
+** Keysigning
+   * Sollte grundsätzlich gegen Vorlage eines Ausweisdokuments und Abgleich des Fingerprints passieren.
+   * Keine weiteren Hürden
+* Das OTRiversum
+** Das OTRiversum
+   #+begin_latex
+   \begin{center}
+   \includegraphics[scale=0.4]{im.jpg}
+   \end{center}
+   #+end_latex
+** Was ist OTR?
+   * Instant-Messenging-Kryptosystem
+   file:otr.png
+** Vergleich zu SSL/TLS und GPG
+   * Konzeptuell ähnlich wie GPG
+   * Verschlüsselung in Layer 7
+   * Dezentral, keine systematische Verifikation
+   * aber: IM-fokussiert
+** Funktionsweise
+   * OTR-fähige Clients sehen sich gegenseitig (Heuristiken)
+   * Dann werden Session-Keys ausgehanndelt
+   * Verschlüsselte Kommunikationn findet statt
+   * Die Session ist beendet, Clients überschreiben im Idealfall den Schlüssel im Speicher
+   * Benutzer können sich gegenseitig verifizieren, müssen sie aber nicht
+** Software
+   * Meistens Pidgin/Adium mit OTR-Plugin
+   * Miranda IM
+   * Trillian
+   * mcabber
+   * bitlbee
+   * ... viele weitere
+
+** Vielen Dank für Ihre Aufmerksamkeit!
+   #+begin_latex
+   \begin{center}
+   \includegraphics[scale=0.4]{voynich.png}
+   
+   Noch Fragen?
+   \end{center}
+   #+end_latex
+
+** Chaostreff Augsburg
+   #+begin_latex
+   \begin{center}
+   \includegraphics[scale=1.0]{c3a.png}
+   \\ ~ \\
+
+   Twitter: @ChaostreffAugsb \\
+   Web: https://www.c3a.de \\
+
+   \\ ~ \\
+   Jeden zweiten Donnerstag im ACF (Frölichstraße 6)
+   \end{center}
+   #+end_latex
